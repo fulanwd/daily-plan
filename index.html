@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="theme-color" content="#fff5f7" />
+  <title>每日计划 ✿</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-top">
+        <h1 class="logo">每日计划 <span class="logo-deco">✿</span></h1>
+        <button id="notifyBtn" class="pill-btn" type="button">开启提醒</button>
+      </div>
+      <p class="date-line" id="dateLine">加载中…</p>
+      <div class="day-card" id="dayCard">
+        <div class="day-emoji" id="dayEmoji">📅</div>
+        <div>
+          <h2 class="day-title" id="dayTitle">—</h2>
+          <p class="day-summary" id="daySummary">—</p>
+        </div>
+      </div>
+      <div class="nav-row">
+        <button id="prevBtn" class="nav-btn" type="button" aria-label="前一天">‹</button>
+        <input id="datePicker" class="date-picker" type="date" />
+        <button id="todayBtn" class="pill-btn subtle" type="button">今天</button>
+        <button id="nextBtn" class="nav-btn" type="button" aria-label="后一天">›</button>
+      </div>
+    </header>
+
+    <section class="now-banner" id="nowBanner" hidden>
+      <span class="now-label">进行中</span>
+      <strong id="nowTitle">—</strong>
+      <p id="nowDetail"></p>
+    </section>
+
+    <main class="timeline" id="timeline"></main>
+
+    <footer class="footer">
+      <button id="calendarBtn" class="footer-btn" type="button">📆 导入系统日历</button>
+      <p class="footer-tip">添加到主屏幕 · 提醒更稳定</p>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
