@@ -1,4 +1,4 @@
-const CACHE = 'daily-plan-v1';
+const CACHE = 'rike-v1';
 const ASSETS = [
   './',
   './index.html',

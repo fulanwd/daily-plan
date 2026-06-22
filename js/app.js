@@ -135,7 +135,7 @@ async function requestNotify() {
     btn.classList.add('on');
     showToast('到点会弹窗提醒（请保持页面或已加主屏幕）');
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.ready.then(reg => reg.showNotification('每日计划', {
+      navigator.serviceWorker.ready.then(reg => reg.showNotification('日课', {
         body: '提醒已就绪，到点会通知你～',
         icon: 'icons/icon-192.png'
       }));
@@ -205,7 +205,7 @@ function exportICS() {
   const blob = new Blob([lines.filter(Boolean).join('\r\n')], { type: 'text/calendar;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `计划-${viewingDate}.ics`;
+  a.download = `日课-${viewingDate}.ics`;
   a.click();
   showToast('已下载，用手机日历打开即可定时提醒');
 }
