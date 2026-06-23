@@ -19,14 +19,14 @@ const THEMES = {
     link: "#ff7a9a",
   },
   dark: {
-    bg: "#0a0a0a",
-    title: TIFFANY_BRIGHT,
-    heading: TIFFANY_BRIGHT,
-    body: "#b8e8e6",
-    muted: "#5aa8a6",
-    accent: TIFFANY,
-    next: TIFFANY_BRIGHT,
-    link: TIFFANY_BRIGHT,
+    bg: "#1e1e26",
+    title: "#ff9eb5",
+    heading: "#e8e4f0",
+    body: "#b0a8bc",
+    muted: "#9a94a8",
+    accent: TIFFANY_BRIGHT,
+    next: "#8ab4f0",
+    link: "#ff9eb5",
   },
 };
 

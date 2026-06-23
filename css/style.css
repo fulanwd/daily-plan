@@ -16,20 +16,22 @@
 }
 
 [data-theme="dark"] {
-  --bg: #0a0a0a;
-  --card: #141414;
-  --text: var(--tiffany-bright);
-  --muted: #5aa8a6;
-  --pink: var(--tiffany-bright);
-  --pink-deep: var(--tiffany);
-  --mint: #14302e;
-  --mint-deep: var(--tiffany-bright);
-  --lavender: #1a2a2e;
-  --shadow: 0 8px 24px rgba(10, 186, 181, 0.18);
+  --bg: #1e1e26;
+  --card: #2a2a34;
+  --text: #e8e4f0;
+  --muted: #9a94a8;
+  --pink: #ff9eb5;
+  --pink-deep: #ff7a9a;
+  --mint: #1e3235;
+  --mint-deep: var(--tiffany);
+  --lavender: #2e2a3a;
+  --key-border: #e8a060;
+  --key-time: #f5b078;
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
 }
 
 [data-theme="dark"] body {
-  background: linear-gradient(160deg, #0a0a0a 0%, #0c1418 50%, #0a1012 100%);
+  background: linear-gradient(165deg, #1e1e26 0%, #262630 40%, #222830 70%, #1e2228 100%);
 }
 
 [data-theme="dark"] .day-card,
@@ -40,17 +42,81 @@
 [data-theme="dark"] .footer-btn,
 [data-theme="dark"] .alert-card,
 [data-theme="dark"] .modal-card {
-  border-color: #1f3335;
+  border-color: #3a3848;
+  background: var(--card);
+}
+
+[data-theme="dark"] .day-card {
+  border-color: #3d3550;
 }
 
 [data-theme="dark"] .pill-btn.subtle {
-  border-color: var(--tiffany);
-  color: var(--tiffany-bright);
-  background: #141414;
+  border-color: #5a5470;
+  color: var(--pink-deep);
+  background: var(--card);
 }
 
-[data-theme="dark"] .item.key-item { border-color: var(--tiffany); }
-[data-theme="dark"] .item.key-item .item-time { color: var(--tiffany-bright); }
+[data-theme="dark"] .pill-btn.on {
+  background: linear-gradient(135deg, var(--tiffany), #089690);
+  box-shadow: 0 4px 14px rgba(10, 186, 181, 0.35);
+}
+
+[data-theme="dark"] .now-banner {
+  background: linear-gradient(135deg, #2a2632, #1e2a2e);
+  border-color: var(--tiffany);
+}
+
+[data-theme="dark"] .now-label {
+  color: var(--tiffany-bright);
+  background: var(--mint);
+}
+
+[data-theme="dark"] .item.current {
+  border-color: var(--pink-deep);
+  box-shadow: 0 4px 20px rgba(255, 126, 154, 0.2);
+}
+
+[data-theme="dark"] .item.next {
+  border-color: #4a4560;
+}
+
+[data-theme="dark"] .item.key-item {
+  border-color: var(--key-border);
+  background: rgba(232, 160, 96, 0.07);
+}
+
+[data-theme="dark"] .item.key-item .item-time {
+  color: var(--key-time);
+}
+
+[data-theme="dark"] .item.past {
+  opacity: 0.45;
+}
+
+[data-theme="dark"] .tag-健身 { background: #3a2830; color: #ff9eb5; }
+[data-theme="dark"] .tag-雅思 { background: #283040; color: #8ab4f0; }
+[data-theme="dark"] .tag-饮食 { background: #3a3428; color: #f5c878; }
+[data-theme="dark"] .tag-睡眠 { background: #2e2a40; color: #b8a8e8; }
+[data-theme="dark"] .tag-放松 { background: #1e3235; color: var(--tiffany-bright); }
+
+[data-theme="dark"] .footer-btn {
+  border-color: #2e4548;
+  background: var(--card);
+  color: var(--tiffany-bright);
+}
+
+[data-theme="dark"] .modal-card { border-color: #3a4850; }
+[data-theme="dark"] .modal-url {
+  background: #2e2a3a;
+  color: #b8a8e8;
+}
+
+[data-theme="dark"] .alert-card {
+  background: var(--card);
+  border-color: var(--pink-deep);
+}
+
+[data-theme="dark"] .alert-badge.key { background: #e8956a; }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -355,8 +421,6 @@ body {
 
 .modal-card { text-align: left; border-color: #b8f0e0; }
 
-[data-theme="dark"] .modal-card { border-color: var(--tiffany-light); }
-
 @keyframes alertPop {
   from { transform: scale(0.9); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -374,8 +438,6 @@ body {
 }
 
 .alert-badge.key { background: #ff8c42; }
-
-[data-theme="dark"] .alert-badge.key { background: var(--tiffany); }
 
 .alert-title {
   font-size: 1.35rem;
