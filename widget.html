@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#fff8fa" />
+  <title>日课一览</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "PingFang SC", sans-serif;
+      background: linear-gradient(160deg, #fff8fa, #eefaf5);
+      color: #4a3f55;
+      min-height: 100dvh;
+      padding: 20px 16px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 18px;
+      border: 2px solid #ffe8ef;
+      box-shadow: 0 8px 24px rgba(255,126,154,.12);
+    }
+    .label { font-size: .75rem; color: #2a9d7a; font-weight: 700; }
+    .label.next { color: #5a82c4; }
+    h1 { font-size: 1.2rem; margin: 6px 0; line-height: 1.35; }
+    p { font-size: .85rem; color: #9a8faa; line-height: 1.45; margin-top: 4px; }
+    .meta { margin-top: 12px; font-size: .78rem; color: #9a8faa; }
+    a { color: #ff7a9a; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">加载中…</div>
+  <p class="meta"><a href="./index.html">打开完整日课 →</a></p>
+  <script>
+    const today = () => {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    };
+    const toMin = t => { const [h,m]=t.split(':').map(Number); return h*60+m; };
+    const now = () => { const n=new Date(); return n.getHours()*60+n.getMinutes(); };
+
+    fetch('data/plans.json?' + Date.now()).then(r=>r.json()).then(data => {
+      const plan = data.plans[today()];
+      const el = document.getElementById('card');
+      if (!plan) { el.innerHTML = '<h1>今天暂无计划</h1>'; return; }
+      const n = now();
+      let cur, next;
+      for (const it of plan.items) {
+        const s = toMin(it.time), e = it.end ? toMin(it.end) : s+15;
+        if (n >= s && n < e) cur = it;
+        if (!next && s > n) next = it;
+      }
+      const hit = cur || next;
+      el.innerHTML = `
+        <div class="label ${cur?'':'next'}">${cur?'进行中':next?`下一步 ${next.time}`:'今日已结束'}</div>
+        <h1>${hit ? hit.title : '🌙 辛苦了'}</h1>
+        <p>${hit?.detail || plan.summary || ''}</p>
+        <p class="meta">${plan.emoji||'✿'} ${plan.label} · ${plan.title}</p>`;
+    });
+  </script>
+</body>
+</html>
