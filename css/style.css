@@ -8,8 +8,8 @@
   --muted: #9a8faa;
   --pink: #ff9eb5;
   --pink-deep: #ff7a9a;
-  --mint: var(--tiffany-light);
-  --mint-deep: var(--tiffany);
+  --mint: #b8f0e0;
+  --mint-deep: #7edfc4;
   --lavender: #e8deff;
   --shadow: 0 8px 24px rgba(255, 126, 154, 0.12);
   --radius: 20px;
@@ -56,7 +56,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif;
-  background: linear-gradient(160deg, var(--bg) 0%, #f3f0ff 50%, #eef8f8 100%);
+  background: linear-gradient(160deg, var(--bg) 0%, #f3f0ff 50%, #eefaf5 100%);
   color: var(--text);
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
@@ -181,14 +181,14 @@ body {
 }
 
 .pill-btn.on {
-  background: linear-gradient(135deg, var(--tiffany), #089690);
+  background: linear-gradient(135deg, var(--mint-deep), #5fd4b0);
   box-shadow: 0 4px 12px rgba(94, 212, 176, 0.35);
 }
 
 .now-banner {
   margin-top: 16px;
-  background: linear-gradient(135deg, #fff0f5, #f0fafa);
-  border: 2px solid var(--tiffany);
+  background: linear-gradient(135deg, #fff0f5, #f0fff8);
+  border: 2px solid var(--mint-deep);
   border-radius: var(--radius);
   padding: 14px 16px;
   animation: pulse 2.5s ease-in-out infinite;
@@ -198,7 +198,7 @@ body {
   display: inline-block;
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--tiffany);
+  color: #2a9d7a;
   background: var(--mint);
   padding: 2px 8px;
   border-radius: 999px;
@@ -282,9 +282,9 @@ body {
 
 .tag-健身 { background: #ffe3ec; color: #d45d82; }
 .tag-雅思 { background: #e3f0ff; color: #5a82c4; }
-.tag-饮食 { background: #e0f7f6; color: var(--tiffany); }
+.tag-饮食 { background: #fff3d6; color: #c4922e; }
 .tag-睡眠 { background: #e8e4ff; color: #6b5fc4; }
-.tag-放松 { background: #e5f8f7; color: #089690; }
+.tag-放松 { background: #e5faf2; color: #3d9e7a; }
 
 .empty {
   text-align: center;
@@ -323,8 +323,8 @@ body {
 
 .footer-tip.subtle { opacity: 0.85; }
 
-.item.key-item { border-color: var(--tiffany); }
-.item.key-item .item-time { color: var(--tiffany); }
+.item.key-item { border-color: #ffd0a0; }
+.item.key-item .item-time { color: #e07a2a; }
 
 .alert-overlay,
 .modal-overlay {
@@ -353,7 +353,9 @@ body {
   animation: alertPop 0.35s ease;
 }
 
-.modal-card { text-align: left; border-color: var(--tiffany-light); }
+.modal-card { text-align: left; border-color: #b8f0e0; }
+
+[data-theme="dark"] .modal-card { border-color: var(--tiffany-light); }
 
 @keyframes alertPop {
   from { transform: scale(0.9); opacity: 0; }
@@ -371,7 +373,9 @@ body {
   margin-bottom: 12px;
 }
 
-.alert-badge.key { background: var(--tiffany); }
+.alert-badge.key { background: #ff8c42; }
+
+[data-theme="dark"] .alert-badge.key { background: var(--tiffany); }
 
 .alert-title {
   font-size: 1.35rem;

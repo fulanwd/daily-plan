@@ -1,4 +1,4 @@
-const CACHE = 'rike-v5';
+const CACHE = 'rike-v6';
 const ASSETS = [
   './',
   './index.html',

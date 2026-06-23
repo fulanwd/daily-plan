@@ -14,7 +14,7 @@ const THEMES = {
     heading: "#4a3f55",
     body: "#5c4f6b",
     muted: "#9a8faa",
-    accent: TIFFANY,
+    accent: "#2a9d7a",
     next: "#5a82c4",
     link: "#ff7a9a",
   },
