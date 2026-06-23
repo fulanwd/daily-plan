@@ -1,7 +1,7 @@
-// 日课 · Scriptable 小组件
-// widget-parameter: {"name":"theme","type":"enumeration","title":"配色","value":"light","caseTitles":["白天","黑夜"],"caseValues":["light","dark"]}
+// 日课 · Scriptable 小组件（主题跟随网站 /.netlify/functions/theme）
 
 const PLANS_URL = "https://fulan-daily-plan.netlify.app/data/plans.json";
+const THEME_URL = "https://fulan-daily-plan.netlify.app/.netlify/functions/theme";
 const RIKE_URL = "https://fulan-daily-plan.netlify.app/index.html";
 
 const THEMES = {
@@ -13,6 +13,7 @@ const THEMES = {
     muted: "#8a7a9a",
     accent: "#1a9d6c",
     next: "#3d6fd4",
+    link: "#ff4d7a",
   },
   dark: {
     bg: "#0a0a0a",
@@ -22,13 +23,9 @@ const THEMES = {
     muted: "#6fd4b0",
     accent: "#5dffc0",
     next: "#7effd4",
+    link: "#5dffc0",
   },
 };
-
-function themeKey() {
-  const t = args.theme || args.widgetParameter || "light";
-  return t === "dark" ? "dark" : "light";
-}
 
 function C(hex) {
   return new Color(hex);
@@ -47,6 +44,17 @@ function timeToMin(t) {
 function nowMin() {
   const n = new Date();
   return n.getHours() * 60 + n.getMinutes();
+}
+
+async function fetchTheme() {
+  try {
+    const req = new Request(THEME_URL);
+    req.headers = { "Cache-Control": "no-cache" };
+    const data = await req.loadJSON();
+    return data.theme === "dark" ? "dark" : "light";
+  } catch (e) {
+    return "light";
+  }
 }
 
 async function fetchPlans() {
@@ -76,7 +84,8 @@ function addLine(widget, text, size, color, bold) {
 }
 
 async function createWidget() {
-  const theme = THEMES[themeKey()];
+  const themeKey = await fetchTheme();
+  const theme = THEMES[themeKey];
   const w = new ListWidget();
   w.setPadding(14, 14, 14, 14);
   w.backgroundColor = C(theme.bg);
@@ -89,43 +98,51 @@ async function createWidget() {
     if (!plan) {
       addLine(w, "日课 ✿", 16, theme.title, true);
       addLine(w, "今天暂无计划", 13, theme.body, false);
-      return w;
-    }
-
-    addLine(w, `${plan.emoji || "✿"} ${plan.label} · ${plan.title}`, 13, theme.title, true);
-
-    const { cur, next } = findCurrent(plan);
-
-    if (cur) {
-      addLine(w, "进行中", 11, theme.accent, true);
-      addLine(w, cur.title, 16, theme.heading, true);
-      if (cur.detail) {
-        const d = addLine(w, cur.detail, 11, theme.muted, false);
-        d.lineLimit = 2;
-      }
-    } else if (next) {
-      addLine(w, `下一步 ${next.time}`, 11, theme.next, true);
-      addLine(w, next.title, 16, theme.heading, true);
     } else {
-      addLine(w, "今日已结束 🌙", 14, theme.body, false);
+      addLine(w, `${plan.emoji || "✿"} ${plan.label} · ${plan.title}`, 13, theme.title, true);
+      const { cur, next } = findCurrent(plan);
+
+      if (cur) {
+        addLine(w, "进行中", 11, theme.accent, true);
+        addLine(w, cur.title, 16, theme.heading, true);
+        if (cur.detail) {
+          const d = addLine(w, cur.detail, 11, theme.muted, false);
+          d.lineLimit = 2;
+        }
+      } else if (next) {
+        addLine(w, `下一步 ${next.time}`, 11, theme.next, true);
+        addLine(w, next.title, 16, theme.heading, true);
+      } else {
+        addLine(w, "今日已结束 🌙", 14, theme.body, false);
+      }
     }
 
-    w.addSpacer();
-    const foot = addLine(w, "日课 · 点击查看", 10, theme.muted, false);
-    foot.rightAlignText();
+    w.addSpacer(8);
+
+    // 独立可点击行（解决部分机型点小组件只开 Scriptable 的问题）
+    const linkStack = w.addStack();
+    linkStack.layoutHorizontally();
+    linkStack.centerAlignContent();
+    const link = linkStack.addText("🌸  点这里打开日课  ›");
+    link.font = Font.boldSystemFont(13);
+    link.textColor = C(theme.link);
+    link.widgetUrl = RIKE_URL;
+
+    const mode = addLine(w, themeKey === "dark" ? "黑夜模式" : "白天模式", 9, theme.muted, false);
+    mode.rightAlignText();
   } catch (e) {
     addLine(w, "日课 ✿", 16, theme.title, true);
     addLine(w, "网络连接失败", 13, theme.body, false);
-    addLine(w, "点击查看网页", 11, theme.muted, false);
+    const link = addLine(w, "🌸 点这里打开日课 ›", 12, theme.link, true);
+    link.widgetUrl = RIKE_URL;
   }
 
   return w;
 }
 
 const widget = await createWidget();
-if (config.runsInWidget) {
-  Script.setWidget(widget);
-} else {
+Script.setWidget(widget);
+if (!config.runsInWidget) {
   await widget.presentMedium();
 }
 Script.complete();

@@ -6,12 +6,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="theme-color" content="#fff8fa" />
   <title>日课一览</title>
+  <link rel="stylesheet" href="css/style.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, "PingFang SC", sans-serif;
-      background: linear-gradient(160deg, #fff8fa, #eefaf5);
-      color: #4a3f55;
+      background: linear-gradient(160deg, var(--bg, #fff8fa), #eefaf5);
+      color: var(--text, #4a3f55);
       min-height: 100dvh;
       padding: 20px 16px;
     }
@@ -33,6 +34,8 @@
 <body>
   <div class="card" id="card">加载中…</div>
   <p class="meta"><a href="./index.html">打开完整日课 →</a></p>
+  <script src="js/theme.js"></script>
+  <script>initTheme();</script>
   <script>
     const today = () => {
       const d = new Date();

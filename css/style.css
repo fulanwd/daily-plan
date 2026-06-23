@@ -12,6 +12,43 @@
   --radius: 20px;
 }
 
+[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --card: #141414;
+  --text: #5dffc0;
+  --muted: #6fd4b0;
+  --pink: #5dffc0;
+  --pink-deep: #7effd4;
+  --mint: #1a3d32;
+  --mint-deep: #5dffc0;
+  --lavender: #1a2a24;
+  --shadow: 0 8px 24px rgba(93, 255, 192, 0.15);
+}
+
+[data-theme="dark"] body {
+  background: linear-gradient(160deg, #0a0a0a 0%, #0f1a16 50%, #0a0a0a 100%);
+}
+
+[data-theme="dark"] .day-card,
+[data-theme="dark"] .item,
+[data-theme="dark"] .nav-btn,
+[data-theme="dark"] .date-picker,
+[data-theme="dark"] .empty,
+[data-theme="dark"] .footer-btn,
+[data-theme="dark"] .alert-card,
+[data-theme="dark"] .modal-card {
+  border-color: #1f3d32;
+}
+
+[data-theme="dark"] .pill-btn.subtle {
+  border-color: #5dffc0;
+  color: #5dffc0;
+  background: #141414;
+}
+
+[data-theme="dark"] .item.key-item { border-color: #5dffc0; }
+[data-theme="dark"] .item.key-item .item-time { color: #7effd4; }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -34,6 +71,12 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .logo {
