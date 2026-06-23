@@ -4,30 +4,29 @@ const PLANS_URL = "https://fulan-daily-plan.netlify.app/data/plans.json";
 const THEME_URL = "https://fulan-daily-plan.netlify.app/.netlify/functions/theme";
 const RIKE_URL = "https://fulan-daily-plan.netlify.app/index.html";
 
-const RED = "#bc3541";
-const PURPLE = "#a883c0";
-const GREEN = "#01a727";
+const TIFFANY = "#0abab5";
+const TIFFANY_BRIGHT = "#7bdee0";
 
 const THEMES = {
   light: {
-    bg: "#faf8fc",
-    title: RED,
-    heading: "#3a2d42",
-    body: "#5a4568",
-    muted: PURPLE,
-    accent: GREEN,
-    next: PURPLE,
-    link: RED,
+    bg: "#fff8fa",
+    title: "#ff7a9a",
+    heading: "#4a3f55",
+    body: "#5c4f6b",
+    muted: "#9a8faa",
+    accent: TIFFANY,
+    next: "#5a82c4",
+    link: "#ff7a9a",
   },
   dark: {
-    bg: "#0e0c10",
-    title: RED,
-    heading: "#d4bde8",
-    body: PURPLE,
-    muted: "#8e6fa8",
-    accent: "#02c42e",
-    next: PURPLE,
-    link: RED,
+    bg: "#0a0a0a",
+    title: TIFFANY_BRIGHT,
+    heading: TIFFANY_BRIGHT,
+    body: "#b8e8e6",
+    muted: "#5aa8a6",
+    accent: TIFFANY,
+    next: TIFFANY_BRIGHT,
+    link: TIFFANY_BRIGHT,
   },
 };
 
