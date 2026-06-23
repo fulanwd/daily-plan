@@ -1,15 +1,42 @@
 // 日课 · Scriptable 小组件
-// 用法：iPhone 安装 Scriptable → 新建脚本 → 粘贴本文件 → 主屏幕添加小组件 → 选「日课」
-// 文档：https://scriptable.app
+// widget-parameter: {"name":"theme","type":"enumeration","title":"配色","value":"light","caseTitles":["白天","黑夜"],"caseValues":["light","dark"]}
 
 const PLANS_URL = "https://fulan-daily-plan.netlify.app/data/plans.json";
+const RIKE_URL = "https://fulan-daily-plan.netlify.app/index.html";
+
+const THEMES = {
+  light: {
+    bg: "#fff8fa",
+    title: "#ff4d7a",
+    heading: "#2d2438",
+    body: "#5c4f6b",
+    muted: "#8a7a9a",
+    accent: "#1a9d6c",
+    next: "#3d6fd4",
+  },
+  dark: {
+    bg: "#0a0a0a",
+    title: "#5dffc0",
+    heading: "#5dffc0",
+    body: "#b8ffe8",
+    muted: "#6fd4b0",
+    accent: "#5dffc0",
+    next: "#7effd4",
+  },
+};
+
+function themeKey() {
+  const t = args.theme || args.widgetParameter || "light";
+  return t === "dark" ? "dark" : "light";
+}
+
+function C(hex) {
+  return new Color(hex);
+}
 
 function todayStr() {
   const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 function timeToMin(t) {
@@ -25,8 +52,7 @@ function nowMin() {
 async function fetchPlans() {
   const req = new Request(PLANS_URL);
   req.headers = { "Cache-Control": "no-cache" };
-  const res = await req.loadJSON();
-  return res;
+  return await req.loadJSON();
 }
 
 function findCurrent(plan) {
@@ -42,61 +68,55 @@ function findCurrent(plan) {
   return { cur, next };
 }
 
+function addLine(widget, text, size, color, bold) {
+  const t = widget.addText(text);
+  t.font = bold ? Font.boldSystemFont(size) : Font.systemFont(size);
+  t.textColor = C(color);
+  return t;
+}
+
 async function createWidget() {
+  const theme = THEMES[themeKey()];
   const w = new ListWidget();
   w.setPadding(14, 14, 14, 14);
-  w.backgroundColor = new Color("#fff8fa");
+  w.backgroundColor = C(theme.bg);
+  w.widgetUrl = RIKE_URL;
 
   try {
     const data = await fetchPlans();
     const plan = data.plans[todayStr()];
 
     if (!plan) {
-      w.addText("日课 ✿").font = Font.boldSystemFont(16);
-      w.addText("今天暂无计划").font = Font.systemFont(12);
-      w.addSpacer();
-      w.widgetUrl = "https://fulan-daily-plan.netlify.app/";
+      addLine(w, "日课 ✿", 16, theme.title, true);
+      addLine(w, "今天暂无计划", 13, theme.body, false);
       return w;
     }
 
-    const title = w.addText(`${plan.emoji || "✿"} ${plan.label} · ${plan.title}`);
-    title.font = Font.boldSystemFont(13);
-    title.textColor = new Color("#ff7a9a");
+    addLine(w, `${plan.emoji || "✿"} ${plan.label} · ${plan.title}`, 13, theme.title, true);
 
     const { cur, next } = findCurrent(plan);
 
     if (cur) {
-      const nowLabel = w.addText("进行中");
-      nowLabel.font = Font.mediumSystemFont(11);
-      nowLabel.textColor = new Color("#2a9d7a");
-      const t = w.addText(cur.title);
-      t.font = Font.boldSystemFont(15);
+      addLine(w, "进行中", 11, theme.accent, true);
+      addLine(w, cur.title, 16, theme.heading, true);
       if (cur.detail) {
-        const d = w.addText(cur.detail);
-        d.font = Font.systemFont(11);
-        d.textColor = new Color("#9a8faa");
+        const d = addLine(w, cur.detail, 11, theme.muted, false);
         d.lineLimit = 2;
       }
     } else if (next) {
-      const nl = w.addText(`下一步 ${next.time}`);
-      nl.font = Font.mediumSystemFont(11);
-      nl.textColor = new Color("#5a82c4");
-      const t = w.addText(next.title);
-      t.font = Font.boldSystemFont(15);
+      addLine(w, `下一步 ${next.time}`, 11, theme.next, true);
+      addLine(w, next.title, 16, theme.heading, true);
     } else {
-      w.addText("今日已结束 🌙").font = Font.systemFont(13);
+      addLine(w, "今日已结束 🌙", 14, theme.body, false);
     }
 
     w.addSpacer();
-    const foot = w.addText("日课");
-    foot.font = Font.systemFont(10);
-    foot.textColor = new Color("#9a8faa");
+    const foot = addLine(w, "日课 · 点击查看", 10, theme.muted, false);
     foot.rightAlignText();
-    w.widgetUrl = "https://fulan-daily-plan.netlify.app/";
   } catch (e) {
-    w.addText("日课 ✿").font = Font.boldSystemFont(16);
-    w.addText("网络连接失败").font = Font.systemFont(12);
-    w.widgetUrl = "https://fulan-daily-plan.netlify.app/";
+    addLine(w, "日课 ✿", 16, theme.title, true);
+    addLine(w, "网络连接失败", 13, theme.body, false);
+    addLine(w, "点击查看网页", 11, theme.muted, false);
   }
 
   return w;
@@ -106,6 +126,6 @@ const widget = await createWidget();
 if (config.runsInWidget) {
   Script.setWidget(widget);
 } else {
-  widget.presentMedium();
+  await widget.presentMedium();
 }
 Script.complete();
