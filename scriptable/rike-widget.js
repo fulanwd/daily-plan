@@ -4,26 +4,30 @@ const PLANS_URL = "https://fulan-daily-plan.netlify.app/data/plans.json";
 const THEME_URL = "https://fulan-daily-plan.netlify.app/.netlify/functions/theme";
 const RIKE_URL = "https://fulan-daily-plan.netlify.app/index.html";
 
+const RED = "#bc3541";
+const PURPLE = "#a883c0";
+const GREEN = "#01a727";
+
 const THEMES = {
   light: {
-    bg: "#fff8fa",
-    title: "#ff4d7a",
-    heading: "#2d2438",
-    body: "#5c4f6b",
-    muted: "#8a7a9a",
-    accent: "#1a9d6c",
-    next: "#3d6fd4",
-    link: "#ff4d7a",
+    bg: "#faf8fc",
+    title: RED,
+    heading: "#3a2d42",
+    body: "#5a4568",
+    muted: PURPLE,
+    accent: GREEN,
+    next: PURPLE,
+    link: RED,
   },
   dark: {
-    bg: "#0a0a0a",
-    title: "#5dffc0",
-    heading: "#5dffc0",
-    body: "#b8ffe8",
-    muted: "#6fd4b0",
-    accent: "#5dffc0",
-    next: "#7effd4",
-    link: "#5dffc0",
+    bg: "#0e0c10",
+    title: RED,
+    heading: "#d4bde8",
+    body: PURPLE,
+    muted: "#8e6fa8",
+    accent: "#02c42e",
+    next: PURPLE,
+    link: RED,
   },
 };
 
