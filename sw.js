@@ -1,10 +1,11 @@
-const CACHE = 'rike-v1';
+const CACHE = 'rike-v2';
 const ASSETS = [
   './',
   './index.html',
   './css/style.css',
   './js/app.js',
   './data/plans.json',
+  './calendar.ics',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png'
@@ -25,7 +26,7 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  if (e.request.url.includes('plans.json')) {
+  if (e.request.url.includes('plans.json') || e.request.url.includes('calendar.ics')) {
     e.respondWith(
       fetch(e.request).then(res => {
         const copy = res.clone();

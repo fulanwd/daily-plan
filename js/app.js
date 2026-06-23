@@ -3,15 +3,18 @@ const TAG_CLASS = {
   '睡眠': 'tag-睡眠', '放松': 'tag-放松', '通勤': '', '日常': '', '休息': ''
 };
 
+const KEY_TAGS = new Set(['睡眠']);
+const KEY_KEYWORDS = ['练前', '练后', '午饭', '入睡', '起床', '午睡', '腹肌', '正餐'];
+const SUBSCRIBE_URL = new URL('calendar.ics', location.href).href;
+
 let plansData = { plans: {} };
 let viewingDate = todayStr();
-const notified = new Set();
+const alerted = new Set();
 
 const $ = (id) => document.getElementById(id);
 
 function todayStr() {
-  const d = new Date();
-  return fmtDate(d);
+  return fmtDate(new Date());
 }
 
 function fmtDate(d) {
@@ -52,6 +55,29 @@ function isViewingToday() {
   return viewingDate === todayStr();
 }
 
+function isKeyItem(item) {
+  if (KEY_TAGS.has(item.tag)) return true;
+  return KEY_KEYWORDS.some((k) => item.title.includes(k));
+}
+
+function alertKey(date, idx, item, suffix = '') {
+  return `${date}-${idx}-${item.time}${suffix}`;
+}
+
+function loadAlertedFromStorage() {
+  const day = todayStr();
+  const prefix = `alert-${day}-`;
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith(prefix)) alerted.add(k.slice(prefix.length));
+  }
+}
+
+function markAlerted(key) {
+  alerted.add(key);
+  localStorage.setItem(`alert-${todayStr()}-${key}`, '1');
+}
+
 async function loadPlans() {
   const res = await fetch('data/plans.json?' + Date.now());
   plansData = await res.json();
@@ -82,11 +108,12 @@ function render() {
     const start = timeToMinutes(item.time);
     const end = item.end ? timeToMinutes(item.end) : start + 15;
     let cls = 'item';
+    if (isKeyItem(item)) cls += ' key-item';
 
     if (isViewingToday()) {
       if (now >= start && now < end) { cls += ' current'; currentIdx = i; }
       else if (now >= end) cls += ' past';
-      else if (currentIdx === -1 && i === plan.items.findIndex(it => timeToMinutes(it.time) > now)) cls += ' next';
+      else if (currentIdx === -1 && i === plan.items.findIndex((it) => timeToMinutes(it.time) > now)) cls += ' next';
     }
 
     const tagCls = TAG_CLASS[item.tag] || '';
@@ -120,94 +147,79 @@ function showToast(msg) {
   const t = $('toast');
   t.textContent = msg;
   t.hidden = false;
-  setTimeout(() => { t.hidden = true; }, 2800);
+  setTimeout(() => { t.hidden = true; }, 3200);
 }
 
-async function requestNotify() {
-  if (!('Notification' in window)) {
-    showToast('此浏览器不支持通知');
-    return;
-  }
-  const perm = await Notification.requestPermission();
-  const btn = $('notifyBtn');
-  if (perm === 'granted') {
-    btn.textContent = '提醒已开启 ✓';
-    btn.classList.add('on');
-    showToast('到点会弹窗提醒（请保持页面或已加主屏幕）');
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.ready.then(reg => reg.showNotification('日课', {
-        body: '提醒已就绪，到点会通知你～',
-        icon: 'icons/icon-192.png'
-      }));
-    }
-  } else {
-    btn.textContent = '开启提醒';
-    showToast('未授权通知，可用下方导入日历');
+function showAlertOverlay(item, opts = {}) {
+  const key = opts.key;
+  if (key && alerted.has(key)) return;
+
+  const overlay = $('alertOverlay');
+  const badge = $('alertBadge');
+  const isKey = isKeyItem(item);
+
+  badge.textContent = opts.badge || (isKey ? '⭐ 关键事项' : '到点了');
+  badge.className = 'alert-badge' + (isKey ? ' key' : '');
+  $('alertTitle').textContent = item.title;
+  $('alertDetail').textContent = item.detail || '按计划执行即可';
+  overlay.hidden = false;
+
+  if (key) markAlerted(key);
+
+  if (navigator.vibrate) {
+    navigator.vibrate(isKey ? [180, 80, 180, 80, 180] : [120, 60, 120]);
   }
 }
 
-function checkReminders() {
-  if (!isViewingToday() || Notification.permission !== 'granted') return;
+function dismissAlert() {
+  $('alertOverlay').hidden = true;
+}
+
+function checkAlerts() {
+  if (!isViewingToday()) return;
   const plan = plansData.plans[viewingDate];
   if (!plan) return;
 
   const now = nowMinutes();
+
   plan.items.forEach((item, i) => {
-    const key = `${viewingDate}-${i}-${item.time}`;
     const start = timeToMinutes(item.time);
-    if (now === start && !notified.has(key)) {
-      notified.add(key);
-      const body = item.detail || '查看计划详情';
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.ready.then(reg => {
-          reg.showNotification(`⏰ ${item.title}`, { body, icon: 'icons/icon-192.png', tag: key });
+    const key = alertKey(viewingDate, i, item);
+
+    // 关键事项：提前 10 分钟弹屏（无声视觉提醒）
+    if (isKeyItem(item)) {
+      const preKey = alertKey(viewingDate, i, item, '-pre');
+      if (now === start - 10 && !alerted.has(preKey)) {
+        showAlertOverlay(item, {
+          key: preKey,
+          badge: '⏳ 10 分钟后',
         });
-      } else {
-        new Notification(`⏰ ${item.title}`, { body });
       }
+    }
+
+    // 准时弹屏
+    if (now === start && !alerted.has(key)) {
+      showAlertOverlay(item, { key, badge: '⏰ 现在' });
     }
   });
 }
 
-function exportICS() {
-  const plan = plansData.plans[viewingDate];
-  if (!plan) { showToast('这天没有计划可导出'); return; }
+function openSubscribeModal() {
+  $('subscribeUrl').textContent = SUBSCRIBE_URL;
+  $('subscribeModal').hidden = false;
+}
 
-  const lines = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//DailyPlan//CN',
-    'CALSCALE:GREGORIAN',
-    'METHOD:PUBLISH'
-  ];
+function closeSubscribeModal() {
+  $('subscribeModal').hidden = true;
+}
 
-  plan.items.forEach((item, i) => {
-    const start = item.time.replace(':', '');
-    const end = (item.end || item.time).replace(':', '');
-    const uid = `${viewingDate}-${i}@dailyplan`;
-    lines.push(
-      'BEGIN:VEVENT',
-      `UID:${uid}`,
-      `DTSTART;TZID=Asia/Shanghai:${viewingDate.replace(/-/g, '')}T${start}00`,
-      `DTEND;TZID=Asia/Shanghai:${viewingDate.replace(/-/g, '')}T${end}00`,
-      `SUMMARY:${item.title}`,
-      item.detail ? `DESCRIPTION:${item.detail.replace(/\n/g, '\\n')}` : '',
-      'BEGIN:VALARM',
-      'TRIGGER:-PT0M',
-      'ACTION:DISPLAY',
-      `DESCRIPTION:${item.title}`,
-      'END:VALARM',
-      'END:VEVENT'
-    );
-  });
-
-  lines.push('END:VCALENDAR');
-  const blob = new Blob([lines.filter(Boolean).join('\r\n')], { type: 'text/calendar;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `日课-${viewingDate}.ics`;
-  a.click();
-  showToast('已下载，用手机日历打开即可定时提醒');
+async function copySubscribeUrl() {
+  try {
+    await navigator.clipboard.writeText(SUBSCRIBE_URL);
+    showToast('已复制！去 iPhone 设置里添加订阅日历');
+  } catch {
+    showToast('请长按上方链接手动复制');
+  }
 }
 
 function bindEvents() {
@@ -215,19 +227,35 @@ function bindEvents() {
   $('nextBtn').onclick = () => { viewingDate = addDays(viewingDate, 1); render(); };
   $('todayBtn').onclick = () => { viewingDate = todayStr(); render(); };
   $('datePicker').onchange = (e) => { viewingDate = e.target.value; render(); };
-  $('notifyBtn').onclick = requestNotify;
-  $('calendarBtn').onclick = exportICS;
+  $('subscribeBtn').onclick = openSubscribeModal;
+  $('copyUrlBtn').onclick = copySubscribeUrl;
+  $('closeModalBtn').onclick = closeSubscribeModal;
+  $('alertDismiss').onclick = dismissAlert;
+  $('subscribeModal').onclick = (e) => {
+    if (e.target === $('subscribeModal')) closeSubscribeModal();
+  };
 }
 
 async function init() {
   if ('serviceWorker' in navigator) {
     try { await navigator.serviceWorker.register('sw.js'); } catch (_) {}
   }
+  loadAlertedFromStorage();
   await loadPlans();
   bindEvents();
   render();
-  setInterval(() => { render(); checkReminders(); }, 30000);
-  checkReminders();
+  checkAlerts();
+
+  setInterval(() => { render(); checkAlerts(); }, 10000);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) { render(); checkAlerts(); }
+  });
+
+  // 首次打开提示订阅（只提示一次）
+  if (!localStorage.getItem('rike-subscribe-hint')) {
+    localStorage.setItem('rike-subscribe-hint', '1');
+    setTimeout(openSubscribeModal, 800);
+  }
 }
 
 init();

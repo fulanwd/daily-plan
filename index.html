@@ -16,7 +16,7 @@
     <header class="header">
       <div class="header-top">
         <h1 class="logo">日课 <span class="logo-deco">✿</span></h1>
-        <button id="notifyBtn" class="pill-btn" type="button">开启提醒</button>
+        <button id="subscribeBtn" class="pill-btn" type="button">订阅日历</button>
       </div>
       <p class="date-line" id="dateLine">加载中…</p>
       <div class="day-card" id="dayCard">
@@ -43,9 +43,35 @@
     <main class="timeline" id="timeline"></main>
 
     <footer class="footer">
-      <button id="calendarBtn" class="footer-btn" type="button">📆 导入系统日历</button>
-      <p class="footer-tip">添加到主屏幕 · 提醒更稳定</p>
+      <p class="footer-tip">📌 到点提醒请用「订阅日历」— iPhone 后台也会弹（比网页通知稳）</p>
+      <p class="footer-tip subtle">打开日课时会全屏弹屏（无声）；关掉应用后靠日历提醒</p>
     </footer>
+  </div>
+
+  <div class="alert-overlay" id="alertOverlay" hidden>
+    <div class="alert-card">
+      <p class="alert-badge" id="alertBadge">到点了</p>
+      <h2 class="alert-title" id="alertTitle">—</h2>
+      <p class="alert-detail" id="alertDetail"></p>
+      <button id="alertDismiss" class="alert-btn" type="button">知道了</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="subscribeModal" hidden>
+    <div class="modal-card">
+      <h3>订阅日课日历</h3>
+      <p class="modal-desc">订阅一次，我更新计划后会自动同步。到点由<strong>系统日历</strong>弹提醒（锁屏也响）。</p>
+      <div class="modal-url" id="subscribeUrl">https://fulan-daily-plan.netlify.app/calendar.ics</div>
+      <button id="copyUrlBtn" class="footer-btn" type="button">复制订阅链接</button>
+      <ol class="modal-steps">
+        <li>iPhone 打开 <strong>设置 → 日历 → 账户 → 添加账户</strong></li>
+        <li>选 <strong>其他 → 添加订阅日历</strong></li>
+        <li>粘贴链接，点订阅</li>
+        <li>关键事项会提前 10 分钟 + 准时各提醒一次</li>
+      </ol>
+      <p class="modal-note">⚠️ 网页「通知」在 iPhone 上后台基本不响，这是系统限制，不是日课坏了。</p>
+      <button id="closeModalBtn" class="pill-btn subtle" type="button">关闭</button>
+    </div>
   </div>
 
   <div class="toast" id="toast" hidden></div>
