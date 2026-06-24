@@ -639,7 +639,7 @@ UID:2026-06-25-6@rike
 DTSTART;TZID=Asia/Shanghai:20260625T073500
 DTEND;TZID=Asia/Shanghai:20260625T074000
 SUMMARY:⭐ 出门核对清单
-DESCRIPTION:[日常] 必带：球衣 ✓  礼服 ✓  手机/充电宝/纸巾/补妆包
+DESCRIPTION:[日常] 必带：球衣 ✓  礼服 ✓  小扇子 ✓  手机/充电宝/纸巾/补妆包
 BEGIN:VALARM
 TRIGGER:-PT0M
 ACTION:DISPLAY
