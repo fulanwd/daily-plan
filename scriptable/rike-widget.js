@@ -1,8 +1,9 @@
-// 日课 · Scriptable 小组件（主题跟随网站 /.netlify/functions/theme）
+// 日课 · Scriptable 小组件
 
-const PLANS_URL = "https://fulan-daily-plan.netlify.app/data/plans.json";
-const THEME_URL = "https://fulan-daily-plan.netlify.app/.netlify/functions/theme";
-const RIKE_URL = "https://fulan-daily-plan.netlify.app/index.html";
+const BASE = "https://fulanwd.github.io/daily-plan";
+const PLANS_URL = `${BASE}/data/plans.json`;
+const THEME_URL = `${BASE}/data/theme.json`;
+const RIKE_URL = `${BASE}/index.html`;
 
 const TIFFANY = "#0abab5";
 const TIFFANY_BRIGHT = "#7bdee0";

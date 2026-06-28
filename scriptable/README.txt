@@ -29,5 +29,5 @@
 
 方案 C · 一览页（不是真小组件，但可快速查看）
 -----------------------------------------
-浏览器打开：https://fulan-daily-plan.netlify.app/widget.html
+浏览器打开：https://fulanwd.github.io/daily-plan/widget.html
 可添加到主屏幕当快捷方式
