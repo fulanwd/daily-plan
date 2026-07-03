@@ -141,6 +141,15 @@ function render() {
   } else {
     banner.hidden = true;
   }
+
+  let ver = document.getElementById('dataVersion');
+  if (!ver) {
+    ver = document.createElement('p');
+    ver.id = 'dataVersion';
+    ver.className = 'footer-tip subtle';
+    document.querySelector('.footer')?.appendChild(ver);
+  }
+  ver.textContent = `数据版本：${plansData.meta?.updated || '—'}`;
 }
 
 function showToast(msg) {
