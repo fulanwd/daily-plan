@@ -239,7 +239,10 @@ function bindEvents() {
 async function init() {
   if (window.initTheme) await window.initTheme();
   if ('serviceWorker' in navigator) {
-    try { await navigator.serviceWorker.register('sw.js'); } catch (_) {}
+    try {
+      const reg = await navigator.serviceWorker.register('sw.js');
+      reg.update();
+    } catch (_) {}
   }
   loadAlertedFromStorage();
   await loadPlans();
