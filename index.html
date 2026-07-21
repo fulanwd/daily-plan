@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="theme-color" content="#fff5f7" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1e1e26" media="(prefers-color-scheme: dark)" />
+  <title>日课 ✿</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-top">
+        <h1 class="logo">日课 <span class="logo-deco">✿</span></h1>
+        <div class="header-actions">
+          <button id="themeBtn" class="pill-btn subtle" type="button" onclick="toggleTheme()">🌙 黑夜</button>
+          <button id="subscribeBtn" class="pill-btn" type="button">订阅日历</button>
+        </div>
+      </div>
+      <p class="date-line" id="dateLine">加载中…</p>
+      <div class="day-card" id="dayCard">
+        <div class="day-emoji" id="dayEmoji">📅</div>
+        <div>
+          <h2 class="day-title" id="dayTitle">—</h2>
+          <p class="day-summary" id="daySummary">—</p>
+        </div>
+      </div>
+      <div class="nav-row">
+        <button id="prevBtn" class="nav-btn" type="button" aria-label="前一天">‹</button>
+        <input id="datePicker" class="date-picker" type="date" />
+        <button id="todayBtn" class="pill-btn subtle" type="button">今天</button>
+        <button id="nextBtn" class="nav-btn" type="button" aria-label="后一天">›</button>
+      </div>
+    </header>
+
+    <section class="now-banner" id="nowBanner" hidden>
+      <span class="now-label">进行中</span>
+      <strong id="nowTitle">—</strong>
+      <p id="nowDetail"></p>
+    </section>
+
+    <main class="timeline" id="timeline"></main>
+
+    <footer class="footer">
+      <p class="footer-tip">📌 到点提醒请用「订阅日历」— iPhone 后台也会弹（比网页通知稳）</p>
+      <p class="footer-tip subtle">打开日课时会全屏弹屏（无声）；关掉应用后靠日历提醒</p>
+    </footer>
+  </div>
+
+  <div class="alert-overlay" id="alertOverlay" hidden>
+    <div class="alert-card">
+      <p class="alert-badge" id="alertBadge">到点了</p>
+      <h2 class="alert-title" id="alertTitle">—</h2>
+      <p class="alert-detail" id="alertDetail"></p>
+      <button id="alertDismiss" class="alert-btn" type="button">知道了</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="subscribeModal" hidden>
+    <div class="modal-card">
+      <h3>订阅日课日历</h3>
+      <p class="modal-desc">订阅一次，我更新计划后会自动同步。到点由<strong>系统日历</strong>弹提醒（锁屏也响）。</p>
+      <div class="modal-url" id="subscribeUrl">https://fulanwd.github.io/daily-plan/calendar.ics</div>
+      <button id="copyUrlBtn" class="footer-btn" type="button">复制订阅链接</button>
+      <ol class="modal-steps">
+        <li>iPhone 打开 <strong>设置 → 日历 → 账户 → 添加账户</strong></li>
+        <li>选 <strong>其他 → 添加订阅日历</strong></li>
+        <li>粘贴链接，点订阅</li>
+        <li>关键事项会提前 10 分钟 + 准时各提醒一次</li>
+      </ol>
+      <p class="modal-note">⚠️ 网页「通知」在 iPhone 上后台基本不响，这是系统限制，不是日课坏了。</p>
+      <button id="closeModalBtn" class="pill-btn subtle" type="button">关闭</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="js/theme.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
